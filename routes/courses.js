@@ -22,7 +22,7 @@ router
       for (i = 0; i < req.body.length; i++) {
       courses.push(req.body[i])
       }
-      res.send("New courses have been added")
+      res.send("New course/s have been added")
       console.log(courses)
   });
 
@@ -37,7 +37,7 @@ router
         // res.send()
     })
     .put((req, res) => {
-        // to post multiple courses at once
+        // to change a course duration
             console.log(req.params.id)
             const course = courses.filter((elem, ind) =>{
                 return elem.id == req.params.id
@@ -46,10 +46,23 @@ router
             course[0].Duration = req.body.Duration
             res.send(course)
         
-        //   res.send("New courses have been added")
+        //   res.send("Course duration has been changed")
         console.log(req.body)
         console.log(courses)
-  });
+    })
+    .delete((req, res) => {
+
+        for (i = 0; i < courses.length; i++){
+            if (courses[i].id == req.params.id) {
+                courses.splice(i, 1)
+                break
+            }
+        }
+        res.send(courses)
+    });
+    
+
+
 
 
 
