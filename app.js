@@ -14,9 +14,9 @@ const students = require("./routes/students.js")
 const users = require("./data.js")
 
 app.use(express.json());
-app.use("/courses", courses);
-app.use("/instructors", instructors);
-app.use("/students", students);
+app.use("/courses", authMiddleWare, courses);
+app.use("/instructors", authMiddleWare,  instructors);
+app.use("/students", authMiddleWare, students);
 
 const generateToken = () => {
  
@@ -68,7 +68,7 @@ app.post("/login", (req, res) => {
 
 app.get('/', authMiddleWare, (req, res) => {
 
-  res.send("omar")
+  res.send("WELCOME TO OUR ACADEMY !")
 
 });
 
