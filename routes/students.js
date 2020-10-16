@@ -1,6 +1,7 @@
 const express = require('express');
 let router = express.Router();
 router.use(express.json());
+// const authMiddleWare = require("./AuthMiddleWare");
 
 const students = [
   {"Name" : "The Hulk", "Subject" : "Javascript", "id": "1"},

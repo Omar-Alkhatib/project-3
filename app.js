@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 const TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION;
+const authMiddleWare = require("./AuthMiddleWare");
 
 const courses = require("./routes/courses.js");
 const instructors = require("./routes/instructors.js")
@@ -16,6 +17,22 @@ app.use(express.json());
 app.use("/courses", courses);
 app.use("/instructors", instructors);
 app.use("/students", students);
+
+const generateToken = () => {
+ 
+  const payload = {
+    id: 3,
+    permissions: ["r", "w"],
+    type: "user",
+  };
+
+  const options = {
+    expiresIn: TOKEN_EXPIRATION,
+  };
+  return jwt.sign(payload, SECRET, options);
+};
+
+console.log(generateToken())
 
 
 let salt = 10;
@@ -49,7 +66,9 @@ app.post("/login", (req, res) => {
 
 
 
-app.get('/', (req, res) => {
+app.get('/', authMiddleWare, (req, res) => {
+
+  res.send("omar")
 
 });
 
