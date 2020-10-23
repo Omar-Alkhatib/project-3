@@ -10,7 +10,7 @@ const authenticateToken = (req, res, next) => {
        console.log("You have a token")
        next()
     const parsedToken = jwt.verify(token, SECRET);
-    // console.log(parsedToken)
+    console.log(parsedToken)
     }
    
     

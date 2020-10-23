@@ -1,74 +1,74 @@
 const express = require('express');
+const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const db = require('../db.js');
+const Courses = require("../schemas/courseSchema.js")
 let router = express.Router();
 router.use(express.json());
-// const authMiddleWare = require("./AuthMiddleWare")
 
 
-let courses = [
-    {"Name" : "Java", "Duration" : "6 months", "id": "1"},
-    {"Name" : "Javascript", "Duration" : "5 months", "id": "2"},
-    {"Name" : "C++", "Duration" : "4 months", "id": "3"},
-    {"Name" : "Python", "Duration" : "3 months", "id": "4"},
-    {"Name" : "Http & CSS", "Duration" : "2 months", "id": "5"}
-]
-// console.log("pre courses")
-router
+  // =================================================================================
+  router
   .route("/")
-  .get((req, res) =>{
-      console.log("courses")
-      res.send(courses)
+  .get( async (req, res) => {
+      console.log( await Courses.find())
+      res.json( await Courses.find())
   })
   .post((req, res) => {
       // to post one or multiple courses at once
-        console.log(req.body)
-      for (i = 0; i < req.body.length; i++) {
-      courses.push(req.body[i])
-      }
-      res.send("New course/s have been added")
-      console.log(courses)
+      console.log(req.body)
+    for (i = 0; i < req.body.length; i++){
+      const course = new Courses({
+      ref: req.body[i].ref,
+      name: req.body[i].name,
+      duration: req.body[i].duration //bcrypt.hash(req.body[i].password, 10)
+      })
+      course.save()
+        .then((result) => {
+          res.send("Course/s have been added")
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+    }
   });
 
 router
-    .route("/:id/")
+    .route("/:ref/") // to find a course by ref.
     .get((req, res) =>{
-        console.log("Course id :", req.params.id)
-
-          res.send(courses.filter((elem, ind) =>{
-              return elem.id == req.params.id
-          })[0])
-        // res.send()
+        console.log("Course ref :", req.params.ref)
+        Courses.findOne({ref: req.params.ref}, (err , result) => {
+          if (err) throw err
+          res.send(result)
+        })
+  
     })
     .put((req, res) => {
-        // to change a course duration
-            console.log(req.params.id)
-            const course = courses.filter((elem, ind) =>{
-                return elem.id == req.params.id
-            })
-
-            course[0].Duration = req.body.Duration
-            res.send(course)
         
-        //   res.send("Course duration has been changed")
-        console.log(req.body)
-        console.log(courses)
+            console.log(req.params.ref)
+            Courses.findOne({email: req.params.ref}, (err, result) => {
+              if (err) throw err;
+              result.ref = req.body.ref;
+              result.name =  req.body.name;
+              result.duration =  req.body.duration; //await bcrypt.hash(req.params.password, 10)
+              result.save()
+              .then((newResult) => {
+                res.send(newResult)
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+        })
     })
     .delete((req, res) => {
 
-        for (i = 0; i < courses.length; i++){
-            if (courses[i].id == req.params.id) {
-                courses.splice(i, 1)
-                break
-            }
-        }
-        res.send(courses)
-    });
-    
-
-
-
-
-
-
-
-
-module.exports = router;
+      console.log(req.params.ref)
+      Courses.findOne({ref: req.params.ref}, (err, result) => {
+        if (err) throw err;
+        result.remove();
+        res.send(`Course with subject ${req.params.ref} has been deleted`)
+  })
+})
+  
+  module.exports = router;

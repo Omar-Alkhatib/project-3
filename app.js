@@ -1,4 +1,6 @@
 const express = require('express');
+const db = require('./db.js');
+
 const app = express();
 const port = 3000;
 require("dotenv").config();
@@ -11,12 +13,13 @@ const authMiddleWare = require("./AuthMiddleWare");
 const courses = require("./routes/courses.js");
 const instructors = require("./routes/instructors.js")
 const students = require("./routes/students.js")
-const users = require("./data.js")
+const users = require("./routes/users.js")
 
-app.use(express.json());
 app.use("/courses", authMiddleWare, courses);
 app.use("/instructors", authMiddleWare,  instructors);
 app.use("/students", authMiddleWare, students);
+app.use("/users", authMiddleWare, users);
+app.use(express.json());
 
 const generateToken = () => {
  
@@ -37,33 +40,6 @@ console.log(generateToken())
 
 let salt = 10;
 
-app.post("/login", (req, res) => {
-
-    if (req.body.Username === users[0].Username) {
-    console.log("hello world")
-    bcrypt.hash(users[0].Password, salt, (err, hash) => {
-
-      bcrypt.compare(req.body.Password, hash, (err, result) => {
-
-        // console.log(result);
-        if (result) {
-          res.send("Login successful")
-        }
-        else {res.send("Invalid Password")}  
-      }) 
-
-    })
-  
-  }
-
-  else {res.send("Invalid Username or Password")}
-
-});
-
-
-
-
-
 
 
 app.get('/', authMiddleWare, (req, res) => {
@@ -73,9 +49,6 @@ app.get('/', authMiddleWare, (req, res) => {
 });
 
 
-
-
-
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Academy app listening at http://localhost:${port}`);
 });

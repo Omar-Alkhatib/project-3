@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const db = require('../db.js');
-const Students = require("../schemas/studentSchema.js")
+const Users = require("../schemas/userSchema.js")
 let router = express.Router();
 router.use(express.json());
 
@@ -11,21 +11,21 @@ router.use(express.json());
   router
   .route("/")
   .get( async (req, res) => {
-      console.log( await Students.find())
-      res.json( await Students.find())
+      console.log( await Users.find())
+      res.json( await Users.find())
   })
   .post((req, res) => {
-      // to post one or multiple students at once
+      // to post one or multiple users at once
       console.log(req.body)
     for (i = 0; i < req.body.length; i++){
-      const student = new Students({
+      const user = new Users({
       email: req.body[i].email,
       username: req.body[i].username,
       password: req.body[i].password //bcrypt.hash(req.body[i].password, 10)
       })
-      student.save()
+      user.save()
         .then((result) => {
-          res.send("Student/s have been added")
+          res.send("User/s have been added")
         })
         .catch((err) => {
           console.log(err)
@@ -35,18 +35,19 @@ router.use(express.json());
   });
 
 router
-    .route("/:email/") // to find a student by email.
+    .route("/:email/") // to find a user by email.
     .get((req, res) =>{
-        console.log("Student email :", req.params.email)
-        Students.findOne({email: req.params.email}, (err , result) => {
+        console.log("User email :", req.params.email)
+        Users.findOne({email: req.params.email}, (err , result) => {
           if (err) throw err
           res.send(result)
         })
   
     })
     .put((req, res) => {
+        // to change a student's subject
             console.log(req.params.email)
-            Students.findOne({email: req.params.email}, (err, result) => {
+            Users.findOne({email: req.params.email}, (err, result) => {
               if (err) throw err;
               result.email = req.body.email;
               result.username =  req.body.username;
@@ -63,10 +64,10 @@ router
     .delete((req, res) => {
 
       console.log(req.params.email)
-      Students.findOne({email: req.params.email}, (err, result) => {
+      Users.findOne({email: req.params.email}, (err, result) => {
         if (err) throw err;
         result.remove();
-        res.send(`Student with email ${req.params.email} has been deleted`)
+        res.send(`User with email ${req.params.email} has been deleted`)
   })
 })
   

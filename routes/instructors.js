@@ -1,66 +1,74 @@
 const express = require('express');
+const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const db = require('../db.js');
+const Instructors = require("../schemas/instructorSchema.js")
 let router = express.Router();
 router.use(express.json());
-// const authMiddleWare = require("./AuthMiddleWare");
 
-const instructors = [
-  {"Name" : "Samira Saeed", "Specialization" : "Java", "id": "1"},
-  {"Name" : "Tweety Bird", "Specialization" : "Javascript", "id": "2"},
-  {"Name" : "Lubna Alsareea", "Specialization" : "C++", "id": "3"},
-  {"Name" : "Hassan Al-Asmar", "Specialization" : "Python", "id": "4"},
-  {"Name" : "Safaa Saeed", "Specialization" : "Http & CSS", "id": "5"}
-]
 
-router
+  // =================================================================================
+  router
   .route("/")
-  .get((req, res) =>{
-      console.log("instructors")
-      res.send(instructors)
+  .get( async (req, res) => {
+      console.log( await Instructors.find())
+      res.json( await Instructors.find())
   })
   .post((req, res) => {
       // to post one or multiple instructors at once
-        console.log(req.body)
-      for (i = 0; i < req.body.length; i++) {
-        instructors.push(req.body[i])
-      }
-      res.send("New instructor/s have been added")
-      console.log(instructors)
+      console.log(req.body)
+    for (i = 0; i < req.body.length; i++){
+      const instructor = new Instructors({
+      email: req.body[i].email,
+      username: req.body[i].username,
+      password: req.body[i].password //bcrypt.hash(req.body[i].password, 10)
+      })
+      instructor.save()
+        .then((result) => {
+          res.send("Instructor/s have been added")
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+    }
   });
 
 router
-    .route("/:id/")
+    .route("/:email/") // to find an instructor by email.
     .get((req, res) =>{
-        console.log("Instructor id :", req.params.id)
-
-          res.send(instructors.filter((elem, ind) =>{
-              return elem.id == req.params.id
-          })[0])
-        // res.send()
+        console.log("User email :", req.params.email)
+        Instructors.findOne({email: req.params.email}, (err , result) => {
+          if (err) throw err
+          res.send(result)
+        })
+  
     })
     .put((req, res) => {
-        // to change an instructor's specialization
-            console.log(req.params.id)
-            const instructor = instructors.filter((elem, ind) =>{
-                return elem.id == req.params.id
-            })
-
-            instructor[0].Specialization = req.body.Specialization
-            res.send(instructors)
         
-        //   res.send("Instructor's specialization has been changed")
-        console.log(req.body)
-        console.log(instructors)
+            console.log(req.params.email)
+            Instructors.findOne({email: req.params.email}, (err, result) => {
+              if (err) throw err;
+              result.email = req.body.email;
+              result.username =  req.body.username;
+              result.password =  req.body.password; //await bcrypt.hash(req.params.password, 10)
+              result.save()
+              .then((newResult) => {
+                res.send(newResult)
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+        })
     })
     .delete((req, res) => {
 
-        for (i = 0; i < instructors.length; i++){
-            if (instructors[i].id == req.params.id) {
-              instructors.splice(i, 1)
-                break
-            }
-        }
-        res.send(instructors)
-    });
-
-
-module.exports = router;
+      console.log(req.params.email)
+      Instructors.findOne({email: req.params.email}, (err, result) => {
+        if (err) throw err;
+        result.remove();
+        res.send(`Instructor with email ${req.params.email} has been deleted`)
+  })
+})
+  
+  module.exports = router;
