@@ -12,8 +12,7 @@ const authenticateToken = (req, res, next) => {
     const parsedToken = jwt.verify(token, SECRET);
     console.log(parsedToken)
     }
-   
-    
+       
   };
 
   module.exports = authenticateToken;

@@ -16,12 +16,16 @@ router.use(express.json());
   })
   .post((req, res) => {
       // to post one or multiple users at once
-      console.log(req.body)
+      // let hashedPass
     for (i = 0; i < req.body.length; i++){
+      
+    //   bcrypt.hash(req.body[i].password, 10 ,(err, hash) => {
+    //   hashedPass = hash 
+    // })
       const user = new Users({
       email: req.body[i].email,
       username: req.body[i].username,
-      password: req.body[i].password //bcrypt.hash(req.body[i].password, 10)
+      password: req.body[i].password //hashedPass 
       })
       user.save()
         .then((result) => {
@@ -30,7 +34,7 @@ router.use(express.json());
         .catch((err) => {
           console.log(err)
         })
-
+      // })
     }
   });
 

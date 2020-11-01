@@ -15,11 +15,15 @@ const instructors = require("./routes/instructors.js")
 const students = require("./routes/students.js")
 const users = require("./routes/users.js")
 
+const mongoose = require('mongoose');
+const Users = require("./schemas/userSchema.js")
+
 app.use("/courses", authMiddleWare, courses);
 app.use("/instructors", authMiddleWare,  instructors);
 app.use("/students", authMiddleWare, students);
 app.use("/users", authMiddleWare, users);
 app.use(express.json());
+
 
 const generateToken = () => {
  
@@ -34,11 +38,24 @@ const generateToken = () => {
   };
   return jwt.sign(payload, SECRET, options);
 };
-
 console.log(generateToken())
 
+// To login to the system:
 
-let salt = 10;
+app.post("/login", (req, res) => {
+console.log("login")
+console.log(Users.find({username: req.body.username}))
+  if (Users.find({username: req.body.username}) && Users.find({email: req.body.email})) {
+    let token = generateToken()
+    res.send(token)
+  }
+  else {"Wrong password or username"}
+
+})
+
+
+
+
 
 
 
