@@ -11,6 +11,7 @@ router.use(express.json());
   router
   .route("/")
   .get( async (req, res) => {
+    console.log("get request for students recieved")
       console.log( await Students.find())
       res.json( await Students.find())
   })
