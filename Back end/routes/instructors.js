@@ -35,10 +35,10 @@ router.use(express.json());
   });
 
 router
-    .route("/:email/") // to find an instructor by email.
+    .route("/:_id/") // to find an instructor by _id.
     .get((req, res) =>{
-        console.log("User email :", req.params.email)
-        Instructors.findOne({email: req.params.email}, (err , result) => {
+        console.log("User _id :", req.params._id)
+        Instructors.findOne({_id: req.params._id}, (err , result) => {
           if (err) throw err
           res.send(result)
         })
@@ -46,11 +46,11 @@ router
     })
     .put((req, res) => {
         
-            console.log(req.params.email)
-            Instructors.findOne({email: req.params.email}, (err, result) => {
+            console.log(req.params._id)
+            Instructors.findOne({_id: req.params._id}, (err, result) => {
               if (err) throw err;
-              result.email = req.body.email;
-              result.username =  req.body.username;
+              // result._id = req.body._id;
+              // result.username =  req.body.username;
               result.password =  req.body.password; //await bcrypt.hash(req.params.password, 10)
               result.save()
               .then((newResult) => {
@@ -63,12 +63,12 @@ router
     })
     .delete((req, res) => {
 
-      console.log(req.params.email)
-      Instructors.findOne({email: req.params.email}, (err, result) => {
+      console.log(req.params._id)
+      Instructors.findOne({_id: req.params._id}, (err, result) => {
         if (err) throw err;
         result.remove();
-        res.send(`Instructor with email ${req.params.email} has been deleted`)
-  })
+        res.json("Instructor deleted")
+    })
 })
   
   module.exports = router;
