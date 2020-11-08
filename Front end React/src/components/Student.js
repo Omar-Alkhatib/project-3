@@ -8,9 +8,13 @@ export default class Student extends Component {
   }
   render() {
 
+    const {oneStudent, num} =this.props
+    const {username, email, _id} = oneStudent
+
     return (
     <div className ="student">
-        <p>{this.props.num} {' || '} Name : {this.props.oneStudent.username} {' || '} Email : {this.props.oneStudent.email}</p>
+        <span>{num} {' || '} Name : {username} {' || '} Email : {email}</span>
+        <button onClick = {this.props.editStudent.bind(this, _id)}>UPDATE</button><button onClick = {this.props.deleteStudent.bind(this, _id)}>DELETE</button>
     </div>
 
     )

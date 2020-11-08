@@ -1,0 +1,50 @@
+
+.app {
+    border: solid dimgray 4px;
+    background-color: white;
+    color: navy;
+    padding: 10px;
+
+}
+
+.app h1 {
+    display: flex;
+    justify-content: center;
+    border: solid rgb(218, 203, 203) 4px;
+    background-color:rgb(245, 233, 233);
+    color: navy;
+    padding: 10px;
+    
+}
+
+ .app nav h3{
+    background-color: rgb(250, 248, 248);
+    display: flex;
+    justify-content: space-evenly;
+}
+
+a:link {
+    background-color: rgb(250, 248, 248);;
+    color: white;
+    cursor: pointer;
+}
+
+.instructor-list {
+    background-color: rgb(250, 248, 248);
+}
+
+.instructor {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    border: solid rgb(218, 203, 203) 1px;
+}
+
+.button {
+    float: right;
+}
+
+    
+
+
+
